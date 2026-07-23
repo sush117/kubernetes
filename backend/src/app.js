@@ -1,4 +1,5 @@
 require("dotenv").config();
+const taskRoutes = require("./routes/taskRoutes");
 
 const express = require("express");
 const morgan = require("morgan");
@@ -16,4 +17,5 @@ app.get("/health", (req, res) => {
     });
 });
 
+app.use("/tasks", taskRoutes);
 module.exports = app;
