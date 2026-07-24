@@ -1,14 +1,24 @@
-let tasks = [];
-let nextId = 1;
+const pool = require("../db/db");
 
 // GET /tasks
-exports.getTasks = (req, res) => {
-    res.json(tasks);
+exports.getTasks = async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT * FROM tasks ORDER BY id"
+        );
+
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
 };
 
 // POST /tasks
-exports.createTask = (req, res) => {
-
+exports.createTask = async (req, res) => {
     const { title } = req.body;
 
     if (!title) {
@@ -17,42 +27,75 @@ exports.createTask = (req, res) => {
         });
     }
 
-    const task = {
-        id: nextId++,
-        title,
-        completed: false,
-        created_at: new Date()
-    };
+    try {
+        const result = await pool.query(
+            `INSERT INTO tasks (title)
+             VALUES ($1)
+             RETURNING *`,
+            [title]
+        );
 
-    tasks.push(task);
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
 
-    res.status(201).json(task);
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
 };
 
 // PUT /tasks/:id
-exports.updateTask = (req, res) => {
+exports.updateTask = async (req, res) => {
+    const id = req.params.id;
 
-    const id = Number(req.params.id);
+    try {
+        const result = await pool.query(
+            `UPDATE tasks
+             SET completed = NOT completed
+             WHERE id = $1
+             RETURNING *`,
+            [id]
+        );
 
-    const task = tasks.find(t => t.id === id);
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
 
-    if (!task) {
-        return res.status(404).json({
-            message: "Task not found"
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({
+            message: "Internal Server Error"
         });
     }
-
-    task.completed = !task.completed;
-
-    res.json(task);
 };
 
 // DELETE /tasks/:id
-exports.deleteTask = (req, res) => {
+exports.deleteTask = async (req, res) => {
+    const id = req.params.id;
 
-    const id = Number(req.params.id);
+    try {
+        const result = await pool.query(
+            "DELETE FROM tasks WHERE id = $1",
+            [id]
+        );
 
-    tasks = tasks.filter(t => t.id !== id);
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
 
-    res.sendStatus(204);
+        res.sendStatus(204);
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
 };
