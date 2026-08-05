@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: deployment
+kind: Deployment
 
 metadata:
   name: task-manager-backend
@@ -15,13 +15,12 @@ spec:
   template:
   
     metadata:
-     labels:
-      app: task-manager-backend
+      labels:
+        app: task-manager-backend
 
     spec:
 
       containers:
-
       - name: backend
         image: asia-south1-docker.pkg.dev/project-4fb80391-d579-456f-9fb/demo-cluster-repo/task-manager-backend:v1
         imagePullPolicy: IfNotPresent
@@ -30,33 +29,33 @@ spec:
         - containerPort: 3000
 
         envFrom:
-          configMapRef:
-            name: backend-config
+          - configMapRef:
+              name: backend-config
 
-          secretRef:
-            name: backend-secret
+          - secretRef:
+              name: backend-secret
 
-          resources:
-            requests:
-              cpu: "250m"
-              memory: "256Mi"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
 
           limits:
             cpu: "500m"
-            memeory: "512Mi"
+            memory: "512Mi"
 
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
 
-            initialDelaySeconds: 20
-            periodSeconds: 10
+          initialDelaySeconds: 20
+          periodSeconds: 10
 
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 3000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
 
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          initialDelaySeconds: 5
+          periodSeconds: 5
