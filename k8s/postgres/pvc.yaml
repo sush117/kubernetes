@@ -13,4 +13,4 @@ spec:
     requests:
       storage: 10Gi
   
-  storageClassName: standard-ReadWriteOnce
+  storageClassName: standard
