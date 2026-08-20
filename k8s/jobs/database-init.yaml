@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: database-init
+  namespace: task-manager
+
+spec:
+  backoffLimit: 3
+
+  template:
+    metadata:
+      labels:
+        app: database-init
+
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+        - name: database-init
+          image: postgres:16
+
+          env:
+            - name: PGHOST
+              value: postgres-service
+
+            - name: PGPORT
+              value: "5432"
+
+            - name: PGDATABASE
+              value: taskdb
+
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+          command:
+            - /bin/sh
+            - -c
+
+          args:
+            - |
+              psql <<'EOF'
+              CREATE TABLE IF NOT EXISTS tasks (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                completed BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+              );
+              EOF
