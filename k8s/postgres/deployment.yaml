@@ -66,6 +66,21 @@ spec:
               cpu: "240m"
               memory: "400Mi"
 
+            readinessProbe:
+              exec:
+                command:
+                  - pg_isready
+                  - -U
+                  - postgres
+                  - -d
+                  - taskdb
+              initialDelaySeconds: 5
+              periodSeconds: 5
+
+            livenessProbe:
+              
+
+
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
