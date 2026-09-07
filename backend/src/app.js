@@ -12,7 +12,8 @@ app.use(morgan("dev"));
 
 app.get("/health", (req, res) => {
     res.status(200).json({
-        status: "UP"
+        status: "UP",
+        version: "v2"
     });
 });
 
