@@ -28,7 +28,7 @@ spec:
 
       containers:
       - name: backend
-        image: asia-south1-docker.pkg.dev/project-4fb80391-d579-456f-9fb/demo-cluster-repo/task-manager-backend:v1
+        image: asia-south1-docker.pkg.dev/project-4fb80391-d579-456f-9fb/demo-cluster-repo/task-manager-backend:v2
         imagePullPolicy: IfNotPresent
 
         ports:
@@ -43,7 +43,7 @@ spec:
 
         resources:
           requests:
-            cpu: "120m"
+            cpu: "100m"
             memory: "200Mi"
 
           limits:

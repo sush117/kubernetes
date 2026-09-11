@@ -1,0 +1,25 @@
+grafana:
+  enabled: true
+  nodeSelector:
+    workload: monitoring
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    nodeSelector:
+      workload: monitoring
+
+prometheusOperator:
+  nodeSelector:
+    workload: monitoring
+
+kube-state-metrics:
+  nodeSelector:
+    workload: monitoring
+
+prometheus:
+  prometheusSpec:
+    retention: 7d
+
+    nodeSelector:
+      workload: monitoring
