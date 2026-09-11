@@ -5,6 +5,9 @@ metadata:
   name: task-manager-backend-service
   namespace: task-manager
 
+  labels: 
+    app: task-manager-backend
+
 spec:
 
   type: ClusterIP
@@ -13,7 +16,8 @@ spec:
     app: task-manager-backend
 
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 3000
       targetPort: 3000
 
