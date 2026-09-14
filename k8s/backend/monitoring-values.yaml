@@ -2,6 +2,13 @@ grafana:
   enabled: true
   nodeSelector:
     workload: monitoring
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: standard-rwo
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
 
 alertmanager:
   enabled: true
@@ -23,3 +30,13 @@ prometheus:
 
     nodeSelector:
       workload: monitoring
+    
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard-rwo
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 4Gi
