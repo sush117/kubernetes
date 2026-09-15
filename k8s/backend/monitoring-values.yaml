@@ -1,7 +1,9 @@
 grafana:
   enabled: true
+
   nodeSelector:
     workload: monitoring
+
   persistence:
     enabled: true
     type: pvc
@@ -10,6 +12,10 @@ grafana:
       - ReadWriteOnce
     size: 2Gi
 
+  grafana.ini:
+    plugins:
+      preinstall_auto_update: false
+      
 alertmanager:
   enabled: true
   alertmanagerSpec:
